@@ -1,5 +1,8 @@
+import axios from 'axios';
 import { useState } from 'react';
-const CreateModal = () => {
+import * as yup from 'yup';
+
+const CreateModal = ({ refetch }: { refetch: () => Promise<void> }) => {
 	const [values, setValues] = useState<{
 		name?: string;
 		age?: string;
@@ -7,10 +10,35 @@ const CreateModal = () => {
 		address?: string;
 		birthday?: string;
 	}>();
+	const [errors, setErrors] = useState([]);
 
-	const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
+	const handleInputChange = (e: React.FormEvent<HTMLInputElement | HTMLSelectElement>) => {
 		const { name, value } = e.currentTarget;
 		setValues({ ...values, [name]: value });
+	};
+
+	const createUserSchema = yup.object({
+		name: yup.string().required().min(2).max(255).trim(),
+		age: yup.number().required().min(1, 'Min age is 1'),
+		gender: yup.string().required().oneOf(['MALE', 'FEMALE']),
+		birthday: yup.string().required(),
+		address: yup.string().required().max(50).trim(),
+	});
+
+	const handleCreate = () => {
+		createUserSchema
+			.validate({ ...values }, { abortEarly: false })
+			.then(async (values) => {
+				try {
+					setErrors([]);
+					await axios.post('/api/v1/users', { ...values });
+					alert('User Created');
+					refetch();
+				} catch (error: any) {
+					alert(error.response.data.message);
+				}
+			})
+			.catch((err) => setErrors(err.errors));
 	};
 
 	return (
@@ -35,6 +63,14 @@ const CreateModal = () => {
 						></button>
 					</div>
 					<div className="modal-body">
+						<div>
+							{errors.map((error, i) => (
+								<div key={i} className="mx-3 my-1 alert alert-danger" role="alert">
+									{error}
+								</div>
+							))}
+						</div>
+						<hr />
 						<div className="row g-2">
 							<div className="col-10">
 								<label htmlFor="name">Name</label>
@@ -60,14 +96,17 @@ const CreateModal = () => {
 							</div>
 							<div className="col-6">
 								<label htmlFor="gender">Gender</label>
-								<input
+								<select
 									id="gender"
 									name="gender"
-									type="text"
-									className="form-control"
+									className="form-select"
 									value={values?.gender}
 									onChange={handleInputChange}
-								/>
+								>
+									<option selected>Select</option>
+									<option value="MALE">Male</option>
+									<option value="FEMALE">Female</option>
+								</select>
 							</div>
 
 							<div className="col-6">
@@ -94,11 +133,12 @@ const CreateModal = () => {
 							</div>
 						</div>
 					</div>
+
 					<div className="modal-footer">
 						<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
 							Close
 						</button>
-						<button type="button" className="btn btn-primary">
+						<button type="button" className="btn btn-primary" onClick={handleCreate}>
 							Create User
 						</button>
 					</div>

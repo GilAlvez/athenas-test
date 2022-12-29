@@ -1,4 +1,15 @@
-const RemoveModal = ({ id }: { id?: number }) => {
+import axios from 'axios';
+
+const RemoveModal = ({ id, refetch }: { id?: number; refetch: () => Promise<void> }) => {
+	const handleRemove = async () => {
+		try {
+			await axios.delete(`/api/v1/users/${id}`);
+			alert('User Deleted');
+			refetch();
+		} catch (error: any) {
+			alert(error.response.data.message);
+		}
+	};
 	return (
 		<div
 			className="modal fade"
@@ -25,7 +36,7 @@ const RemoveModal = ({ id }: { id?: number }) => {
 						<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
 							Close
 						</button>
-						<button type="button" className="btn btn-danger">
+						<button type="button" className="btn btn-danger" onClick={handleRemove}>
 							Yes, remove!
 						</button>
 					</div>

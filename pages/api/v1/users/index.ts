@@ -4,7 +4,7 @@ import prisma from '../../../../libs/prisma';
 // GET ALL
 const handlerGetAll: NextApiHandler = async (req, res) => {
 	const { page } = req.query;
-	const itemsPerPage = 10;
+	const itemsPerPage = 5;
 	const offset = page ? (+(page as string) - 1) * itemsPerPage : undefined;
 	const totalItems = await prisma.user.count();
 	const totalPages = Math.ceil(totalItems / itemsPerPage);
