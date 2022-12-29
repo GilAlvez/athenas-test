@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
-const EditModal = ({ id }: { id?: number }) => {
+const EditModal = ({ id, refetch }: { id?: number; refetch: () => Promise<void> }) => {
 	const [values, setValues] = useState<{
 		name?: string;
 		age?: string;
@@ -12,6 +13,29 @@ const EditModal = ({ id }: { id?: number }) => {
 	const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
 		const { name, value } = e.currentTarget;
 		setValues({ ...values, [name]: value });
+	};
+
+	useEffect(() => {
+		const getUserById = async () => {
+			try {
+				const { data } = await axios.get(`/api/v1/users/${id}`);
+				setValues(data.user);
+			} catch (error: any) {
+				alert(error.response.data.message);
+			}
+		};
+
+		id && getUserById();
+	}, [id]);
+
+	const handleUpdate = async () => {
+		try {
+			await axios.put(`/api/v1/users/${id}`, { ...values, age: +(values?.age as string) });
+			alert('User Updated');
+			refetch();
+		} catch (error: any) {
+			alert(error.response.data.message);
+		}
 	};
 	return (
 		<div
@@ -98,7 +122,7 @@ const EditModal = ({ id }: { id?: number }) => {
 						<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
 							Close
 						</button>
-						<button type="button" className="btn btn-primary">
+						<button type="button" className="btn btn-primary" onClick={handleUpdate}>
 							Edit
 						</button>
 					</div>
