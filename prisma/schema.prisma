@@ -15,11 +15,9 @@ model User {
   name String
   age Int
   gender Gender
-  birthday DateTime
+  birthday String
   address String?
   createdAt DateTime @default(now())
-
-  @@map("users")
 }
 
 enum Gender {
