@@ -115,9 +115,8 @@ const EditModal = ({ id, refetch }: { id?: number; refetch: () => Promise<void> 
 									value={values?.gender}
 									onChange={handleInputChange}
 								>
-									<option value="MALE" selected>
-										Male
-									</option>
+									<option selected>Select</option>
+									<option value="MALE">Male</option>
 									<option value="FEMALE">Female</option>
 								</select>
 							</div>
