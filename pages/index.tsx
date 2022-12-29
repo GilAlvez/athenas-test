@@ -71,7 +71,7 @@ export default function Home() {
 				<Column dataField="name" />
 				<Column dataField="age" />
 				<Column dataField="gender" />
-				<Column dataField="address.street" />
+				<Column dataField="address" />
 				<Column dataField="birthday" />
 				<Column
 					dataField="id"

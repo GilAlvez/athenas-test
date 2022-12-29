@@ -1,14 +1,9 @@
-interface Users {
+export interface Users {
 	id: number;
 	name: string;
 	age: number;
 	gender: 'male' | 'female';
-	address: {
-		street: string;
-		number: number | 'S/N';
-		city: string;
-		country: string;
-	};
+	address: string;
 	birthday: Date;
 }
 
@@ -18,7 +13,7 @@ export const listAllUsers: Users[] = [
 		name: 'Example 1',
 		age: 20,
 		gender: 'male',
-		address: { street: 'Anywhere Street', number: 2, city: 'João Pessoa', country: 'Brazil' },
+		address: 'anywhere street',
 		birthday: new Date(),
 	},
 	{
@@ -26,7 +21,7 @@ export const listAllUsers: Users[] = [
 		name: 'Example 2',
 		age: 20,
 		gender: 'male',
-		address: { street: 'Anywhere Street', number: 2, city: 'João Pessoa', country: 'Brazil' },
+		address: 'anywhere street',
 		birthday: new Date(),
 	},
 	{
@@ -34,7 +29,7 @@ export const listAllUsers: Users[] = [
 		name: 'Example 3',
 		age: 20,
 		gender: 'male',
-		address: { street: 'Anywhere Street', number: 2, city: 'João Pessoa', country: 'Brazil' },
+		address: 'anywhere street',
 		birthday: new Date(),
 	},
 	{
@@ -42,7 +37,7 @@ export const listAllUsers: Users[] = [
 		name: 'Example 4',
 		age: 20,
 		gender: 'male',
-		address: { street: 'Anywhere Street', number: 2, city: 'João Pessoa', country: 'Brazil' },
+		address: 'anywhere street',
 		birthday: new Date(),
 	},
 	{
@@ -50,7 +45,7 @@ export const listAllUsers: Users[] = [
 		name: 'Example 5',
 		age: 20,
 		gender: 'male',
-		address: { street: 'Anywhere Street', number: 2, city: 'João Pessoa', country: 'Brazil' },
+		address: 'anywhere street',
 		birthday: new Date(),
 	},
 	{
@@ -58,7 +53,7 @@ export const listAllUsers: Users[] = [
 		name: 'Example 6',
 		age: 20,
 		gender: 'female',
-		address: { street: 'Anywhere Street', number: 2, city: 'João Pessoa', country: 'Brazil' },
+		address: 'anywhere street',
 		birthday: new Date(),
 	},
 	{
@@ -66,7 +61,7 @@ export const listAllUsers: Users[] = [
 		name: 'Example 7',
 		age: 20,
 		gender: 'female',
-		address: { street: 'Anywhere Street', number: 2, city: 'João Pessoa', country: 'Brazil' },
+		address: 'anywhere street',
 		birthday: new Date(),
 	},
 	{
@@ -74,7 +69,7 @@ export const listAllUsers: Users[] = [
 		name: 'Example 8',
 		age: 20,
 		gender: 'female',
-		address: { street: 'Anywhere Street', number: 2, city: 'João Pessoa', country: 'Brazil' },
+		address: 'anywhere street',
 		birthday: new Date(),
 	},
 	{
@@ -82,7 +77,7 @@ export const listAllUsers: Users[] = [
 		name: 'Example 9',
 		age: 20,
 		gender: 'female',
-		address: { street: 'Anywhere Street', number: 2, city: 'João Pessoa', country: 'Brazil' },
+		address: 'anywhere street',
 		birthday: new Date(),
 	},
 	{
@@ -90,7 +85,7 @@ export const listAllUsers: Users[] = [
 		name: 'Example 10',
 		age: 20,
 		gender: 'female',
-		address: { street: 'Anywhere Street', number: 2, city: 'João Pessoa', country: 'Brazil' },
+		address: 'anywhere street',
 		birthday: new Date(),
 	},
 ];
