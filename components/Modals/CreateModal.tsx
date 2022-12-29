@@ -1,5 +1,7 @@
+import axios from 'axios';
 import { useState } from 'react';
-const CreateModal = () => {
+
+const CreateModal = ({ refetch }: { refetch: () => Promise<void> }) => {
 	const [values, setValues] = useState<{
 		name?: string;
 		age?: string;
@@ -11,6 +13,16 @@ const CreateModal = () => {
 	const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
 		const { name, value } = e.currentTarget;
 		setValues({ ...values, [name]: value });
+	};
+
+	const handleCreate = async () => {
+		try {
+			await axios.post('/api/v1/users', { ...values, age: +(values?.age as string) });
+			alert('User Created');
+			refetch();
+		} catch (error: any) {
+			alert(error.response.data.message);
+		}
 	};
 
 	return (
@@ -98,7 +110,7 @@ const CreateModal = () => {
 						<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
 							Close
 						</button>
-						<button type="button" className="btn btn-primary">
+						<button type="button" className="btn btn-primary" onClick={handleCreate}>
 							Create User
 						</button>
 					</div>
