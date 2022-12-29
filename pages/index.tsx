@@ -1,20 +1,48 @@
 import DataGrid, { Column, SearchPanel } from 'devextreme-react/data-grid';
+import { useState } from 'react';
+import CreateModal from '../components/Modals/CreateModal';
+import RemoveModal from '../components/Modals/RemoveModal';
+import ViewModal from '../components/Modals/ViewModal';
 import { pagination } from '../data/pagination';
 import { listAllUsers } from '../data/users';
 
 export default function Home() {
-	const RenderActionsCell = () => {
+	const [selectedUser, setSelectedUser] = useState<number>();
+
+	// Modal Handlers
+	const createUserModal = () => {
+		const { Modal } = require('bootstrap');
+		const myModal = new Modal('#createModal');
+		myModal.show();
+	};
+	const viewUserModal = (id: number) => {
+		setSelectedUser(id);
+		const { Modal } = require('bootstrap');
+		const myModal = new Modal('#editModal');
+		myModal.show();
+	};
+	const removeUserModal = (id: number) => {
+		setSelectedUser(id);
+		const { Modal } = require('bootstrap');
+		const myModal = new Modal('#removeModal');
+		myModal.show();
+	};
+
+	// Actions Cell
+	const RenderActionsCell = (data: any) => {
 		return (
 			<>
 				<button
 					type="button"
 					className="btn btn-sm btn-primary bi bi-pencil-fill"
 					aria-label="View"
+					onClick={() => viewUserModal(data.value)}
 				/>
 				<button
 					type="button"
 					className="btn btn-sm btn-danger bi bi-trash-fill"
 					aria-label="Remove"
+					onClick={() => removeUserModal(data.value)}
 				/>
 			</>
 		);
@@ -26,7 +54,7 @@ export default function Home() {
 
 	return (
 		<section>
-			<button type="button" className="btn btn-primary">
+			<button type="button" className="btn btn-primary" onClick={() => createUserModal()}>
 				Create new user
 			</button>
 
@@ -69,6 +97,11 @@ export default function Home() {
 					</li>
 				</ul>
 			</nav>
+
+			{/* MODALS */}
+			<ViewModal id={selectedUser} />
+			<RemoveModal id={selectedUser} />
+			<CreateModal />
 		</section>
 	);
 }
