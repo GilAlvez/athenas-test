@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import axios from 'axios';
 import DataGrid, { Column, SearchPanel } from 'devextreme-react/data-grid';
 import { useEffect, useState } from 'react';
@@ -7,23 +8,24 @@ import ViewModal from '../components/Modals/ViewModal';
 
 export default function Home() {
 	const [selectedUser, setSelectedUser] = useState<number>();
-	const [data, setData] = useState({ users: [], pagination: { total: 0, current: 0 } });
+	const [data, setData] = useState({ users: [], pagination: { total: 0, current: 1 } });
 	const [loading, setLoading] = useState(false);
 	const [page, setPage] = useState(1);
 
 	// Fetch Data
+	const getAllUsers = async () => {
+		try {
+			setLoading(true);
+			const { data } = await axios.get('/api/v1/users', { params: { page } });
+			setData(data);
+		} catch (error: any) {
+			alert(error.response.data.message);
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	useEffect(() => {
-		const getAllUsers = async () => {
-			try {
-				setLoading(true);
-				const { data } = await axios.get('/api/v1/users', { params: { page } });
-				setData(data);
-			} catch (error: any) {
-				alert(error.response.data.message);
-			} finally {
-				setLoading(false);
-			}
-		};
 		getAllUsers();
 	}, [page]);
 
@@ -132,9 +134,9 @@ export default function Home() {
 			)}
 
 			{/* MODALS */}
-			<ViewModal id={selectedUser} />
-			<RemoveModal id={selectedUser} />
-			<CreateModal />
+			<ViewModal id={selectedUser} refetch={getAllUsers} />
+			<RemoveModal id={selectedUser} refetch={getAllUsers} />
+			<CreateModal refetch={getAllUsers} />
 		</section>
 	);
 }
