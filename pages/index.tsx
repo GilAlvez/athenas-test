@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from 'axios';
 import DataGrid, { Column, SearchPanel } from 'devextreme-react/data-grid';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import CreateModal from '../components/Modals/CreateModal';
 import RemoveModal from '../components/Modals/RemoveModal';
@@ -72,71 +73,90 @@ export default function Home() {
 	};
 
 	return (
-		<section>
-			<button type="button" className="btn btn-primary" onClick={() => createUserModal()}>
-				Create new user
-			</button>
+		<>
+			<header>
+				<div className="d-flex justify-content-center">
+					<Image
+						className="d-flex mt-4 justify-content-center"
+						src="/LOGO.png"
+						alt="Athenas Logo"
+						width={144}
+						height={102}
+					/>
+				</div>
+				<div className="d-flex mt-4 justify-content-center">
+					<button
+						type="button"
+						className="btn btn-primary btn-lg"
+						onClick={() => createUserModal()}
+					>
+						Create new user
+					</button>
+				</div>
+			</header>
 
-			{/* PAGINATION */}
-			<nav aria-label="Page navigation example">
-				<ul className="mt-2 pagination justify-content-end">
-					<li className="page-item">
-						<span className="page-link" onClick={() => page > 1 && setPage((page) => page - 1)}>
-							Prev
-						</span>
-					</li>
-					{arrayOfPages.map((page) => (
-						<li className="page-item" key={page}>
-							<span
-								className={`page-link ${data.pagination.current === page && 'active'}`}
-								onClick={() => setPage(page)}
-							>
-								{page}
+			<main>
+				{/* PAGINATION */}
+				<nav aria-label="Page navigation example">
+					<ul className="mt-2 pagination justify-content-end">
+						<li className="page-item">
+							<span className="page-link" onClick={() => page > 1 && setPage((page) => page - 1)}>
+								Prev
 							</span>
 						</li>
-					))}
-					<li className="page-item">
-						<span
-							className="page-link"
-							onClick={() => page < data.pagination.total && setPage((page) => page + 1)}
-						>
-							Next
-						</span>
-					</li>
-				</ul>
-			</nav>
+						{arrayOfPages.map((page) => (
+							<li className="page-item" key={page}>
+								<span
+									className={`page-link ${data.pagination.current === page && 'active'}`}
+									onClick={() => setPage(page)}
+								>
+									{page}
+								</span>
+							</li>
+						))}
+						<li className="page-item">
+							<span
+								className="page-link"
+								onClick={() => page < data.pagination.total && setPage((page) => page + 1)}
+							>
+								Next
+							</span>
+						</li>
+					</ul>
+				</nav>
 
-			{loading ? (
-				<h3 className="my-3">Carregando</h3>
-			) : (
-				<DataGrid
-					id="dataGrid"
-					dataSource={data.users}
-					allowColumnReordering
-					columnAutoWidth
-					rowAlternationEnabled
-					showBorders
-				>
-					<SearchPanel visible highlightCaseSensitive />
+				{loading ? (
+					<h3 className="my-3">Carregando</h3>
+				) : (
+					<DataGrid
+						id="dataGrid"
+						dataSource={data.users}
+						allowColumnReordering
+						columnAutoWidth
+						rowAlternationEnabled
+						showBorders
+					>
+						<SearchPanel visible highlightCaseSensitive />
 
-					<Column dataField="name" />
-					<Column dataField="age" />
-					<Column dataField="gender" />
-					<Column dataField="address" />
-					<Column dataField="birthday" dataType="date" />
-					<Column
-						dataField="id"
-						caption="Actions"
-						cssClass={'d-flex justify-content-center gap-2'}
-						cellRender={RenderActionsCell}
-					/>
-				</DataGrid>
-			)}
+						<Column dataField="name" />
+						<Column dataField="age" />
+						<Column dataField="gender" />
+						<Column dataField="address" />
+						<Column dataField="birthday" dataType="date" />
+						<Column
+							dataField="id"
+							caption="Actions"
+							cssClass={'d-flex justify-content-center gap-2'}
+							cellRender={RenderActionsCell}
+						/>
+					</DataGrid>
+				)}
 
-			{/* MODALS */}
-			<ViewModal id={selectedUser} refetch={getAllUsers} />
-			<RemoveModal id={selectedUser} refetch={getAllUsers} />
-			<CreateModal refetch={getAllUsers} />
-		</section>
+				{/* MODALS */}
+				<ViewModal id={selectedUser} refetch={getAllUsers} />
+				<RemoveModal id={selectedUser} refetch={getAllUsers} />
+				<CreateModal refetch={getAllUsers} />
+			</main>
+		</>
 	);
 }
