@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import * as yup from 'yup';
 
 const EditModal = ({ id, refetch }: { id?: number; refetch: () => Promise<void> }) => {
 	const [values, setValues] = useState<{
@@ -9,8 +10,9 @@ const EditModal = ({ id, refetch }: { id?: number; refetch: () => Promise<void> 
 		address?: string;
 		birthday?: string;
 	}>();
+	const [errors, setErrors] = useState([]);
 
-	const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
+	const handleInputChange = (e: React.FormEvent<HTMLInputElement | HTMLSelectElement>) => {
 		const { name, value } = e.currentTarget;
 		setValues({ ...values, [name]: value });
 	};
@@ -28,14 +30,28 @@ const EditModal = ({ id, refetch }: { id?: number; refetch: () => Promise<void> 
 		id && getUserById();
 	}, [id]);
 
+	const updateUserSchema = yup.object({
+		name: yup.string().required().min(2).max(255).trim(),
+		age: yup.number().required().min(1, 'Min age is 1'),
+		gender: yup.string().required().oneOf(['MALE', 'FEMALE']),
+		birthday: yup.date().required(),
+		address: yup.string().required().max(50).trim(),
+	});
+
 	const handleUpdate = async () => {
-		try {
-			await axios.put(`/api/v1/users/${id}`, { ...values, age: +(values?.age as string) });
-			alert('User Updated');
-			refetch();
-		} catch (error: any) {
-			alert(error.response.data.message);
-		}
+		updateUserSchema
+			.validate({ ...values }, { abortEarly: false })
+			.then(async (values) => {
+				try {
+					setErrors([]);
+					await axios.put(`/api/v1/users/${id}`, { ...values });
+					alert('User Updated');
+					refetch();
+				} catch (error: any) {
+					alert(error.response.data.message);
+				}
+			})
+			.catch((err) => setErrors(err.errors));
 	};
 	return (
 		<div
@@ -49,7 +65,7 @@ const EditModal = ({ id, refetch }: { id?: number; refetch: () => Promise<void> 
 				<div className="modal-content">
 					<div className="modal-header">
 						<h2 className="modal-title fs-5" id="editModalLabel">
-							Edit User: {id}
+							Edit User: {values?.name}
 						</h2>
 						<button
 							type="button"
@@ -59,6 +75,14 @@ const EditModal = ({ id, refetch }: { id?: number; refetch: () => Promise<void> 
 						></button>
 					</div>
 					<div className="modal-body">
+						<div>
+							{errors.map((error, i) => (
+								<div key={i} className="mx-3 my-1 alert alert-danger" role="alert">
+									{error}
+								</div>
+							))}
+						</div>
+						<hr />
 						<div className="row g-2">
 							<div className="col-10">
 								<label htmlFor="name">Name</label>
@@ -84,14 +108,18 @@ const EditModal = ({ id, refetch }: { id?: number; refetch: () => Promise<void> 
 							</div>
 							<div className="col-6">
 								<label htmlFor="gender">Gender</label>
-								<input
+								<select
 									id="gender"
 									name="gender"
-									type="text"
-									className="form-control"
+									className="form-select"
 									value={values?.gender}
 									onChange={handleInputChange}
-								/>
+								>
+									<option value="MALE" selected>
+										Male
+									</option>
+									<option value="FEMALE">Female</option>
+								</select>
 							</div>
 
 							<div className="col-6">
