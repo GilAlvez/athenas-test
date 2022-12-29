@@ -9,3 +9,20 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id Int @id @default(autoincrement())
+  name String
+  age Int
+  gender Gender
+  birthday DateTime
+  address String?
+  createdAt DateTime @default(now())
+
+  @@map("users")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
